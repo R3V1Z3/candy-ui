@@ -6,6 +6,117 @@ atom-panel-container atom-text-editor.is-focused {
   .focus();
 }
 
+// minor adjustment for comments
+.syntax--comment {
+    font-style: italic;
+    opacity: 0.75;
+}
+
+// we want color, make it bright
+atom-text-editor {
+    filter: saturate(1.3) contrast(1.1);
+}
+
+// subtle text-shadow
+atom-text-editor:not([mini]) * {
+    font-weight: 900;
+    text-shadow:
+        0px 0px 1px @ui-fg,
+        2px 2px 1px @ui-fg,
+        3px 3px 1px currentColor;
+}
+
+// we'll try to target light themes here.
+// use ui-bg for text-shadow
+atom-text-editor *,
+atom-workspace[class*="-light"] atom-text-editor * {
+    text-shadow:
+        0px 0px 1px @ui-bg,
+        2px 2px 1px @ui-bg,
+        3px 3px 1px currentColor;
+}
+
+// stripes, pretty candy stripes for the editor
+atom-text-editor:not([mini])::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    opacity: 0.75;
+    background-color: @ui-fg;
+    background-image:
+        linear-gradient(135deg,
+        rgba(255,255,255,0.85) 25%,
+        rgba(255,255,255,1) 25%,
+        rgba(255,255,255,1) 50%,
+        rgba(255,255,255,0.85) 50%,
+        rgba(255,255,255,0.85) 75%,
+        rgba(255,255,255,1) 75%,
+        rgba(255,255,255,1) 100%);
+    background-size: 2em 2em;
+    background-blend-mode: screen;
+    mix-blend-mode: multiply;
+}
+
+.markdown-preview atom-text-editor::after {
+    display: none;
+}
+
+// get those extra colors out of the gutter
+.gutter {
+    background: none;
+}
+
+atom-text-editor-minimap .minimap-visible-area::after {
+    background: none !important;
+    box-shadow: inset 0 0 100px @ui-bg;
+    border-radius: 5px;
+}
+
+// try to target light themes with ui-fg box-shadow
+atom-workspace[class*="-light"] atom-text-editor-minimap .minimap-visible-area::after{
+    box-shadow: inset 0 0 100px @ui-fg;
+}
+
+atom-text-editor .selection .region,
+atom-text-editor.is-focused .selection .region {
+    background: antiquewhite;
+    border-radius: 5px;
+    box-shadow: 0 0 20px antiquewhite;
+    text-shadow: none;
+}
+
+// desaturated selections, wat?
+// TODO: ensure this doesn't create issues with Hydrogen or other extensions
+atom-text-editor .highlights,
+atom-text-editor .highlights.find-result .region {
+    z-index: 1;
+    mix-blend-mode: color;
+}
+
+// extra styles for current line
+atom-text-editor.editor {
+    .line.cursor-line {
+        background: none;
+        box-shadow: inset 0 0 2em rgba(0,0,0,0.095);
+    }
+    .gutter .line-number.cursor-line {
+        filter: contrast(80%) brightness(130%);
+    }
+}
+
+// cursor adjustments, to give cursor same text-shadow as rest of ui
+atom-text-editor.editor {
+    .cursors .cursor {
+        border: none;
+    }
+    .cursors .cursor::after {
+        content: "▎";
+    }
+}
 
 // Mini
 // Usually just single line inputs
@@ -27,11 +138,6 @@ atom-text-editor[mini] {
 
   .selection .region {
     background-color: @input-selection-color;
-  }
-
-  .cursor {
-    border-color: @accent-color;
-    border-width: 2px;
   }
 
   &.is-focused {
